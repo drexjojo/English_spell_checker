@@ -172,8 +172,9 @@ input_test_sentences = []
 print("[INFO] -> Starting Testing")
 
 with open("test_set.txt") as f:
-	for line in f.readlines() :
-		input_test_sentences.append(line.lower().split())
+    for line in f.readlines() :
+        line = line.replace(".","").replace("!","").replace("?","").replace(",","").lower()
+        input_test_sentences.append(line.split())
 
 input_test = input_test_sentences[:]
 
@@ -195,27 +196,39 @@ for seq_index in range(len(input_test)):
         else :
             answer.append(i)
 
-    predicted_output = []
-    if len(answer) == len(input_test[seq_index]) :
-        for i,tar in enumerate(answer) :
-            if tar == '0' :
-                predicted_output.append(input_test_sentences[seq_index][i])
-            else :
-                if input_test[seq_index][i] in confusion_words :
-                    predicted_output.append(find_other(input_test_sentences[seq_index][i]))
-                else :
-                    predicted_output.append(input_test_sentences[seq_index][i])
-
-        generated_ans.append(" ".join(predicted_output))
+    if '1' not in answer:
+        #case where there is no error predicted by the model
         print('-')
         print('Input sentence  :', " ".join(input_test_sentences[seq_index]))
-        print('Output sentence :', " ".join(predicted_output))
-        # print('supposed to be : ', " ".join(target_test[seq_index][1:-1]))
+        print('Output sentence :', " ".join(input_test_sentences[seq_index]))
         print("\n")
+
     else :
-        print('Input sentence  :', " ".join(input_test_sentences[seq_index]))
-        print(answer)
-        generated_ans.append(" ".join(answer))
+        predicted_output = []
+        if len(answer) == len(input_test[seq_index]) :
+            for i,tar in enumerate(answer) :
+                if tar == '0' :
+                    predicted_output.append(input_test_sentences[seq_index][i])
+                else :
+                    if input_test[seq_index][i] in confusion_words :
+                        predicted_output.append(find_other(input_test_sentences[seq_index][i]))
+                    else :
+                        predicted_output.append(input_test_sentences[seq_index][i])
+
+            generated_ans.append(" ".join(predicted_output))
+            print('-')
+            print('Input sentence  :', " ".join(input_test_sentences[seq_index]))
+            print('Output sentence :', " ".join(predicted_output))
+            # print('supposed to be : ', " ".join(target_test[seq_index][1:-1]))
+            print("\n")
+        else :
+            #failed output : print originial sentence
+            print('-')
+            # print("Model failed :( ")
+            print('Input sentence  :', " ".join(input_test_sentences[seq_index]))
+            print('Output sentence :', " ".join(input_test_sentences[seq_index]))
+            generated_ans.append(" ".join(input_test_sentences[seq_index]))
+            print("\n")
 
 with open("generated_ans.txt",'w') as f:
 	for line in generated_ans :

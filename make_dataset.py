@@ -18,7 +18,6 @@ confusion_pairs = [['edition', 'addition'],
 ['wrong', 'wring'],
 ['wrongs', 'wrings'],
 ['things', 'thinks'],
-['widow', 'window'],
 ["dont", "don't"]]
 
 def find_list(word) :
